@@ -17,6 +17,10 @@ img {
   vertical-align: top;
 }
 
+button:focus {
+  outline: none;
+}
+
 /* Cutomize */
 .makingButton {
   display: block;

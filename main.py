@@ -38,8 +38,14 @@ def create_user(oauth_token, user_id):
 @app.route('/recipes')
 @authorize()
 def get_recipe_pins(oauth_token, user_id):
-    cursor = request.args.get('cursor') or ''
-    query = request.args.get('query') or ''
-    response = requests.get(get_pingredients_url() + '/recipes?cursor=' + cursor + '&query=' + query,
-                            headers={'oauth_token': oauth_token, 'user_id': user_id})
+    cursor = request.args.get('cursor')
+    query = request.args.get('query')
+    url = get_pingredients_url() + '/recipes?'
+    if cursor:
+        url += 'cursor=' + cursor
+    if query:
+        if cursor:
+            url += '&'
+        url += 'query=' + query
+    response = requests.get(url, headers={'oauth_token': oauth_token, 'user_id': user_id})
     return jsonify(response.json())
