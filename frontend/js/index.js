@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 import React, { Component } from 'react';
 import {isMobile, isTablet} from 'react-device-detect';
 import StackGrid, { transitions, easings } from 'react-stack-grid';
+import Waypoint from 'react-waypoint';
 import '../css/index.css';
 import makingButton from  '../images/fry-6.png';
 import pingredientsLogo from '../images/pingredients-120.png'
@@ -58,12 +59,16 @@ class Recipes extends Component {
       screenWidth: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
       screenHeight: window.innerHeight,
       token: token,
+      recipes: [],
+      cursor: "default"
     };
     if (DEV) {
       this.state.userId = "dev_user_id";
       axios.defaults.headers.common["oauth_token"] = this.state.token;
       axios.defaults.headers.common["user_id"] = this.state.userId;
-      this.loadRecipes();
+      axios.put('/users/' + this.state.userId).then(function(response) {
+        this.loadRecipes();
+      }.bind(this));
     }
     this.getScreenDimensions = this.getScreenDimensions.bind(this);
     this.login = this.login.bind(this);
@@ -96,9 +101,22 @@ class Recipes extends Component {
   }
 
   loadRecipes() {
-    axios.get('/recipes').then(function(response) {
+    if (!this.state.cursor) {
+      return
+    }
+    if (this.state.isLoading) {
+      return;
+    }
+    this.setState({isLoading: true});
+    let url = '/recipes';
+    if (this.state.cursor != "default") {
+      url += '?cursor=' + this.state.cursor;
+    }
+    axios.get(url).then(function(response) {
       this.setState({
-        recipes: response.data.data
+        recipes: this.state.recipes.concat(response.data.data),
+        cursor: response.data.cursor,
+        isLoading: false
       });
     }.bind(this));
   }
@@ -152,7 +170,7 @@ class Recipes extends Component {
         entered={transition.entered}
         leaved={transition.leaved}
       >
-        {this.state.recipes.map(recipe => (
+        {this.state.recipes.map((recipe, index) => (
           <figure
             key={recipe.id}
             className="image"
@@ -162,15 +180,14 @@ class Recipes extends Component {
             <button className="makingButton"><img src={makingButton}/></button>
           </figure>
         ))}
+        <Waypoint
+          key={this.state.cursor}
+          onEnter={this.loadRecipes}
+        />
       </StackGrid>
     );
   }
 }
-
-const mapSizesToProps = ({ width, height }) => ({
-  isLandscape: (width > height) && isMobile,
-  screenWidth: width
-})
 
 
 ReactDOM.render(
