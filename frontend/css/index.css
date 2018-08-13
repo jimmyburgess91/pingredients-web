@@ -36,6 +36,24 @@ button:focus {
   -ms-transform: translate(-50%, -50%);
 }
 
+.tabBarItem {
+    text-align: justify;
+    width: 100%;
+    text-align: center;
+    bottom: 5px;
+    position: relative;
+}
+
+.tabBarItem p {
+  -webkit-margin-before: 0px;
+}
+
+.tabBarItem img {
+    display: block;
+    margin: 0 auto;
+    border-radius: 50%;
+}
+
 .loginButton {
   border: 0px;
   height: 36px;
