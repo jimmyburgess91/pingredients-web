@@ -5,9 +5,16 @@ import ReactDOM from 'react-dom';
 import React, { Component } from 'react';
 import {isMobile, isTablet} from 'react-device-detect';
 import StackGrid, { transitions, easings } from 'react-stack-grid';
+import Tabs, { TabPane } from 'rc-tabs';
+import TabContent from 'rc-tabs/lib/TabContent';
+import 'rc-tabs/assets/index.css';
+import SwipeableInkTabBar from 'rc-tabs/lib/SwipeableInkTabBar';
 import Waypoint from 'react-waypoint';
 import '../css/index.css';
 import makingButton from  '../images/fry-6.png';
+import groceriesTab from '../images/groceries-25.png';
+import makingTab from '../images/fry-tab.png';
+import pingredientsTab from '../images/pingredients-24.png';
 import pingredientsLogo from '../images/pingredients-120.png'
 
 
@@ -157,34 +164,44 @@ class Recipes extends Component {
     window.onresize = this.getScreenDimensions;
     let columnDimensions = getColumnDimensions(this.state.screenWidth, this.state.screenHeight);
     return (
-      <StackGrid
-        monitorImagesLoaded
-        columnWidth={columnDimensions.columnWidth}
-        duration={600}
-        gutterWidth={columnDimensions.gutter}
-        gutterHeight={columnDimensions.gutter}
-        appearDelay={60}
-        appear={transition.appear}
-        appeared={transition.appeared}
-        enter={transition.enter}
-        entered={transition.entered}
-        leaved={transition.leaved}
+      <Tabs
+        defaultActiveKey="1"
+        renderTabBar={()=><SwipeableInkTabBar style={{height: 60}} pageSize={3}/>}
+        renderTabContent={()=><TabContent/>}
       >
-        {this.state.recipes.map((recipe, index) => (
-          <figure
-            key={recipe.id}
-            className="image"
+        <TabPane tab={<div className="tabBarItem"><img src={pingredientsTab}/><p>Recipes</p></div>} key="recipes">
+          <StackGrid
+            monitorImagesLoaded
+            columnWidth={columnDimensions.columnWidth}
+            duration={600}
+            gutterWidth={columnDimensions.gutter}
+            gutterHeight={columnDimensions.gutter}
+            appearDelay={60}
+            appear={transition.appear}
+            appeared={transition.appeared}
+            enter={transition.enter}
+            entered={transition.entered}
+            leaved={transition.leaved}
           >
-            <img src={recipe.image.original.url}/>
-            <figcaption>{recipe.metadata.recipe.name}</figcaption>
-            <button className="makingButton"><img src={makingButton}/></button>
-          </figure>
-        ))}
-        <Waypoint
-          key={this.state.cursor}
-          onEnter={this.loadRecipes}
-        />
-      </StackGrid>
+            {this.state.recipes.map((recipe, index) => (
+              <figure
+                key={recipe.id}
+                className="image"
+              >
+                <img src={recipe.image.original.url}/>
+                <figcaption>{recipe.metadata.recipe.name}</figcaption>
+                <button className="makingButton"><img src={makingButton}/></button>
+              </figure>
+            ))}
+            <Waypoint
+              key={this.state.cursor}
+              onEnter={this.loadRecipes}
+            />
+          </StackGrid>
+        </TabPane>
+        <TabPane tab={<div className="tabBarItem"><img src={makingTab}/><p>Making</p></div>} key="making">second</TabPane>
+        <TabPane tab={<div className="tabBarItem"><img src={groceriesTab}/><p>Groceries</p></div>} key="groceries">third</TabPane>
+      </Tabs>
     );
   }
 }
