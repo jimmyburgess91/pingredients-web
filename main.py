@@ -49,3 +49,19 @@ def get_recipe_pins(oauth_token, user_id):
         url += 'query=' + query
     response = requests.get(url, headers={'oauth_token': oauth_token, 'user_id': user_id})
     return jsonify(response.json())
+
+
+@app.route('/making-recipes', methods=['POST'])
+@authorize()
+def make_recipe(oauth_token, user_id):
+    response = requests.post(get_pingredients_url() + '/making-recipes', json=request.get_json(),
+                             headers={'oauth_token': oauth_token, 'user_id': user_id})
+    return jsonify(response.json())
+
+
+@app.route('/making-recipes/<recipe_id>', methods=['DELETE'])
+@authorize()
+def unmake_recipe(oauth_token, user_id, recipe_id):
+    response = requests.delete(get_pingredients_url() + '/making-recipes/' + recipe_id,
+                               headers={'oauth_token': oauth_token, 'user_id': user_id})
+    return jsonify(response.json())
