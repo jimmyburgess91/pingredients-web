@@ -20,6 +20,8 @@ import pingredientsLogo from '../images/pingredients-120.png'
 
 
 const transition = transitions.scaleDown;
+const darkGrey = "#555555";
+const jungleGreen = "#00ca80";
 
 function getColumnDimensions(screenWidth, screenHeight) {
   let isLandscape = (screenWidth > screenHeight) && isMobile;
@@ -81,6 +83,7 @@ class Recipes extends Component {
     this.login = this.login.bind(this);
     this.createOrGetUser = this.createOrGetUser.bind(this);
     this.loadRecipes = this.loadRecipes.bind(this);
+    this.toggleMaking = this.toggleMaking.bind(this);
   }
 
   createOrGetUser() {
@@ -128,6 +131,27 @@ class Recipes extends Component {
     }.bind(this));
   }
 
+  toggleMaking(recipe, index) {
+    let recipes = this.state.recipes;
+    recipes[index].making = !recipe.making;
+    recipes[index].loading = true;
+    this.setState({recipes: recipes});
+    if (recipe.making) {
+      axios.delete('/making-recipes/' + recipe.id).then(function(response) {
+        let recipes = this.state.recipes;
+        recipes[index].loading = false;
+        this.setState({recipes: recipes});
+      }.bind(this));
+    } else {
+      axios.post('/making-recipes', recipe).then(function(response) {
+        let recipes = this.state.recipes;
+        recipes[index].loading = false;
+        this.setState({recipes: recipes});
+      }.bind(this));;
+    }
+
+  }
+
   render() {
     if (this.state.token && !(this.state.userId && this.state.recipes)) {
       return null;
@@ -166,7 +190,7 @@ class Recipes extends Component {
     return (
       <Tabs
         defaultActiveKey="1"
-        renderTabBar={()=><SwipeableInkTabBar style={{height: 60}} pageSize={3}/>}
+        renderTabBar={()=><SwipeableInkTabBar style={{height: 60, marginBottom: 10}} pageSize={3}/>}
         renderTabContent={()=><TabContent/>}
       >
         <TabPane tab={<div className="tabBarItem"><img src={pingredientsTab}/><p>Recipes</p></div>} key="recipes">
@@ -190,7 +214,15 @@ class Recipes extends Component {
               >
                 <img src={recipe.image.original.url}/>
                 <figcaption>{recipe.metadata.recipe.name}</figcaption>
-                <button className="makingButton"><img src={makingButton}/></button>
+                <button
+                  className="makingButton"
+                  style={{backgroundColor: recipe.making ? jungleGreen : darkGrey}}
+                  disabled={recipe.loading}
+                  ref={btn => { this.btn = btn; }}
+                  onClick={() => this.toggleMaking(recipe, index)}
+                >
+                  <img src={makingButton}/>
+                </button>
               </figure>
             ))}
             <Waypoint
