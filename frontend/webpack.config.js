@@ -15,6 +15,7 @@ module.exports = (env) => {
         filename: 'bundle.js',
     },
     resolve: {
+        modules: ['node_modules', 'js'],
         extensions: ['.js', '.jsx', '.css']
     },
     plugins: [
