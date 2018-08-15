@@ -65,3 +65,11 @@ def unmake_recipe(oauth_token, user_id, recipe_id):
     response = requests.delete(get_pingredients_url() + '/making-recipes/' + recipe_id,
                                headers={'oauth_token': oauth_token, 'user_id': user_id})
     return jsonify(response.json())
+
+
+@app.route('/making-recipes')
+@authorize()
+def get_making_recipes(oauth_token, user_id):
+    response = requests.get(get_pingredients_url() + '/making-recipes',
+                            headers={'oauth_token': oauth_token, 'user_id': user_id})
+    return jsonify(response.json())

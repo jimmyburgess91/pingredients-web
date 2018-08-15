@@ -32,21 +32,45 @@ class Recipes extends Component {
     this.loadRecipes();
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.activeTab == "making" && prevProps.activeTab != "making") {
+      this.loadRecipes();
+    }
+
+    if (!this.props.makingOnly && this.props.lastUnmakeId != prevProps.lastUnmakeId) {
+      let recipeId = this.props.lastUnmakeId;
+      let recipes = this.state.recipes;
+      recipes.find(function(r) { return r.id == recipeId; }).making = false;
+      this.setState({recipes: recipes});
+    }
+  }
+
   loadRecipes() {
-    if (!this.state.cursor) {
+    if (!this.state.cursor && !this.props.makingOnly) {
       return
     }
     if (this.state.isLoading) {
       return;
     }
     this.setState({isLoading: true});
-    let url = '/recipes';
-    if (this.state.cursor != "default") {
-      url += '?cursor=' + this.state.cursor;
+    let url = '';
+    if (!this.props.makingOnly) {
+      url = '/recipes';
+      if (this.state.cursor != "default") {
+        url += '?cursor=' + this.state.cursor;
+      }
+    } else {
+      url = '/making-recipes';
     }
     axios.get(url).then(function(response) {
+      let recipes = [];
+      if (this.props.makingOnly) {
+        recipes = response.data.data;
+      } else {
+        recipes = this.state.recipes.concat(response.data.data);
+      }
       this.setState({
-        recipes: this.state.recipes.concat(response.data.data),
+        recipes: recipes,
         cursor: response.data.cursor,
         isLoading: false
       });
@@ -65,7 +89,14 @@ class Recipes extends Component {
       axios.delete('/making-recipes/' + recipe.id).then(function(response) {
         let recipes = this.state.recipes;
         recipes[index].loading = false;
+
+        if (this.props.makingOnly) {
+          this.props.unmakeCallback(recipes[index].id);
+          recipes.splice(index, 1);
+        }
+
         this.setState({recipes: recipes});
+
       }.bind(this));
     } else {
       axios.post('/making-recipes', recipe).then(function(response) {
@@ -127,6 +158,7 @@ class Recipes extends Component {
         enter={transition.enter}
         entered={transition.entered}
         leaved={transition.leaved}
+        style={{marginTop: 70}}
       >
         {this.state.recipes.map((recipe, index) => (
           <figure
@@ -146,10 +178,12 @@ class Recipes extends Component {
             </button>
           </figure>
         ))}
-        <Waypoint
-          key={this.state.cursor}
-          onEnter={this.loadRecipes}
-        />
+        {!this.props.makingOnly &&
+          <Waypoint
+            key={this.state.cursor}
+            onEnter={this.loadRecipes}
+          />
+        }
       </StackGrid>
     );
   }
