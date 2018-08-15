@@ -19,9 +19,13 @@ class Pingredients extends Component {
     super(props);
     this.state = {
       token: null,
-      userId: null
+      userId: null,
+      activeTab: "recipes",
+      lastUnmakeId: null
     }
     this.authCallback = this.authCallback.bind(this);
+    this.unmakeCallback = this.unmakeCallback.bind(this);
+    this.tabChange = this.tabChange.bind(this);
   }
 
   authCallback(token, userId) {
@@ -29,6 +33,14 @@ class Pingredients extends Component {
       token: token,
       userId: userId
     });
+  }
+
+  unmakeCallback(recipeId) {
+    this.setState({lastUnmakeId: recipeId});
+  }
+
+  tabChange(key) {
+    this.setState({activeTab: key});
   }
 
   render() {
@@ -41,14 +53,25 @@ class Pingredients extends Component {
     return (
       <Tabs
         defaultActiveKey="recipes"
-        renderTabBar={()=><SwipeableInkTabBar style={{height: 60, marginBottom: 10}} pageSize={3}/>}
+        onChange={this.tabChange}
+        renderTabBar={()=><SwipeableInkTabBar style={{height: 60, top: 0, position: "fixed", width:"100%", zIndex: 999, backgroundColor: "rgb(249, 249, 249)"}} pageSize={3}/>}
         renderTabContent={()=><TabContent/>}
       >
         <TabPane tab={<div className="tabBarItem"><img src={pingredientsTab}/><p>Recipes</p></div>} key="recipes">
-          <Recipes userId={this.state.userId} token={this.state.token}/>
+          <Recipes
+            userId={this.state.userId}
+            token={this.state.token}
+            lastUnmakeId={this.state.lastUnmakeId}
+          />
         </TabPane>
         <TabPane tab={<div className="tabBarItem"><img src={makingTab}/><p>Making</p></div>} key="making">
-          Second
+          <Recipes
+            userId={this.state.userId}
+            token={this.state.token}
+            makingOnly={true}
+            activeTab={this.state.activeTab}
+            unmakeCallback={this.unmakeCallback}
+          />
         </TabPane>
         <TabPane tab={<div className="tabBarItem"><img src={groceriesTab}/><p>Groceries</p></div>} key="groceries">
           third
