@@ -158,7 +158,6 @@ class Recipes extends Component {
         enter={transition.enter}
         entered={transition.entered}
         leaved={transition.leaved}
-        style={{marginTop: 70}}
       >
         {this.state.recipes.map((recipe, index) => (
           <figure
