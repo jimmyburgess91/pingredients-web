@@ -10,6 +10,7 @@ import makingTab from '../images/fry-tab.png';
 import pingredientsTab from '../images/pingredients-24.png';
 import Recipes from 'recipes';
 import Login from 'login';
+import Groceries from 'groceries';
 
 
 
@@ -55,7 +56,7 @@ class Pingredients extends Component {
         defaultActiveKey="recipes"
         onChange={this.tabChange}
         renderTabBar={()=><SwipeableInkTabBar style={{height: 60, top: 0, position: "fixed", width:"100%", zIndex: 999, backgroundColor: "rgb(249, 249, 249)"}} pageSize={3}/>}
-        renderTabContent={()=><TabContent/>}
+        renderTabContent={()=><TabContent style={{marginTop: 70}}/>}
       >
         <TabPane tab={<div className="tabBarItem"><img src={pingredientsTab}/><p>Recipes</p></div>} key="recipes">
           <Recipes
@@ -74,7 +75,7 @@ class Pingredients extends Component {
           />
         </TabPane>
         <TabPane tab={<div className="tabBarItem"><img src={groceriesTab}/><p>Groceries</p></div>} key="groceries">
-          third
+          <Groceries userId={this.state.userId} token={this.state.token} activeTab={this.state.activeTab}/>
         </TabPane>
       </Tabs>
     );

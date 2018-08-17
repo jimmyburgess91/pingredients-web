@@ -109,3 +109,63 @@ button:focus {
   margin: .2em 0 0;
   font-weight: normal;
 }
+
+
+.rc-tabs-top {
+  border-bottom: none;
+}
+
+.tabBarItem {
+  font-size: 16px;
+}
+
+@media (hover: hover) {
+  .groceryCategoryContainer:hover {
+    background-color: rgb(243, 243, 243);
+  }
+}
+
+.is-open {
+  text-align: center;
+  display: block;
+  border-bottom: 2px solid;
+  border-color: rgb(243, 243, 243);
+  height: 50px;
+  background-color: rgb(243, 243, 243);
+}
+
+.is-open .caretDown {
+  display: none;
+}
+
+.is-closed .caretUp {
+  display: none;
+}
+
+.groceryCategoryContainer {
+  text-align: center;
+  display: block;
+  border-bottom: 2px solid;
+  border-color: rgb(243, 243, 243);
+  height: 50px;
+  background-color: rgb(243, 243, 243, 0.3);
+}
+
+.groceryListContainer {
+  width: 80%;
+  margin: 0px auto;
+  border-left: 2px solid;
+  border-right: 2px solid;
+  border-top: 2px solid;
+  border-color: rgb(243, 243, 243);
+}
+
+.groceryCategoryText {
+  color: #0087f1;
+  line-height: 3;
+}
+
+.groceryCategoryExpandIcon {
+  margin-top: 15;
+  float: right;
+}
