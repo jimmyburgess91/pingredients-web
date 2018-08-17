@@ -11,14 +11,26 @@ class Groceries extends Component {
     this.loadGroceryList();
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.activeTab == "groceries" && prevProps.activeTab != "groceries") {
+      this.loadGroceryList();
+    }
+  }
+
   loadGroceryList() {
     axios.get('/grocery-list').then(function(response) {
       this.setState({groceryList: response.data});
-      console.log(this.state.groceryList);
     }.bind(this));
   }
 
   render() {
+    if (!Object.keys(this.state.groceryList).length) {
+      return (
+        <div style={{textAlign: "center"}}>
+          Click the frying pan button on some recipes on the recipes tab to get started
+        </div>
+      );
+    }
     return (
       <div className="groceryListContainer">
         {Object.keys(this.state.groceryList).map(category => (
@@ -29,9 +41,9 @@ class Groceries extends Component {
                     <img src={caretDown} className="groceryCategoryExpandIcon caretDown"/>
                   </div>
               </div>
-            } triggerClassName="groceryCategoryContainer">
+            } triggerClassName="groceryCategoryContainer" key={category}>
             {this.state.groceryList[category].map(ingredient => (
-              <div style={{textAlign: "center"}}>
+              <div style={{textAlign: "center"}} key={ingredient.display_amount + ingredient.unit + ingredient.name}>
                 <p>{ingredient.display_amount + ' ' + ingredient.unit + ' ' + ingredient.name}</p>
               </div>
             ))}
