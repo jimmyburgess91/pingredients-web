@@ -139,9 +139,23 @@ class Recipes extends Component {
 
   render() {
     document.body.classList.remove("loginBackground");
-    if (!this.state.recipes) {
-      return null;
+
+    if (!this.state.recipes.length) {
+      if (this.props.makingOnly) {
+        return (
+          <div style={{textAlign: "center"}}>
+            Click the frying pan button on some recipes on the recipes tab to get started
+          </div>
+        );
+      } else {
+        return (
+          <div style={{textAlign: "center"}}>
+            Pin some recipes on pinterest to get started
+          </div>
+        );
+      }
     }
+
     window.onload = this.getScreenDimensions;
     window.onresize = this.getScreenDimensions;
     let columnDimensions = this.getColumnDimensions(this.state.screenWidth, this.state.screenHeight);

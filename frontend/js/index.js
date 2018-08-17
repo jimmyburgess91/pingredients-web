@@ -75,7 +75,7 @@ class Pingredients extends Component {
           />
         </TabPane>
         <TabPane tab={<div className="tabBarItem"><img src={groceriesTab}/><p>Groceries</p></div>} key="groceries">
-          <Groceries userId={this.state.userId} token={this.state.token} activeTab={this.state.activeTab}/>
+          <Groceries activeTab={this.state.activeTab}/>
         </TabPane>
       </Tabs>
     );
