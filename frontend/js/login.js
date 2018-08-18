@@ -6,15 +6,17 @@ import pingredientsLogo from '../images/pingredients-120.png'
 class Login extends Component {
   constructor(props) {
     super(props);
+    this.state = {};
 
     if (DEV) {
       let token="dev_token";
       let userId = "dev_user_id"
       axios.defaults.headers.common["oauth_token"] = token;
       axios.defaults.headers.common["user_id"] = userId;
-      axios.put('/users/' + userId);
-      this.props.authCallback(token, userId);
-      this.state = {token: token};
+      axios.put('/users/' + userId).then(function(response) {
+        this.props.authCallback(token, userId);
+        this.state = {token: token};
+      }.bind(this));
     } else {
       PDK.init({
           appId: "4945793189364646595",
@@ -41,10 +43,11 @@ class Login extends Component {
 
   createOrGetUser(token) {
     PDK.me({}, function(response) {
-      axios.put('/users/' + response.data.id, {}, {headers: {"oauth_token": token}});
-      axios.defaults.headers.common["oauth_token"] = token;
-      axios.defaults.headers.common["user_id"] = response.data.id;
-      this.props.authCallback(token, response.data.id);
+      axios.put('/users/' + response.data.id, {}, {headers: {"oauth_token": token}}).then(function(r) {
+        axios.defaults.headers.common["oauth_token"] = token;
+        axios.defaults.headers.common["user_id"] = response.data.id;
+        this.props.authCallback(token, response.data.id);
+      }.bind(this));
     }.bind(this));
   }
 
