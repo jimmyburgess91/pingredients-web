@@ -192,13 +192,10 @@ class Recipes extends Component {
           </figure>
         ))}
         {!this.props.makingOnly &&
-          <div>
           <Waypoint
             key={this.state.cursor}
             onEnter={this.loadRecipes}
           />
-          <p>JIMMY</p>
-          </div>
         }
       </StackGrid>
     );
