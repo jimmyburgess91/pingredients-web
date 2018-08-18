@@ -13,7 +13,7 @@ app = Flask(__name__, template_folder='frontend', static_folder='frontend/dist')
 def get_pingredients_url():
     if not os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine/'):
         return 'http://localhost:8080/'
-    return 'https://pingredients-192501.appspot.com/'
+    return 'https://pingredients-api-dot-pingredients-192501.appspot.com'
 
 
 @app.errorhandler(500)
