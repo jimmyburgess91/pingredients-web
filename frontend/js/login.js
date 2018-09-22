@@ -45,7 +45,7 @@ class Login extends Component {
     PDK.me({}, function(response) {
       if (response.error) {
         PDK.logout(function() {
-          this.login();
+          this.setState({token: null});
         }.bind(this));
         return;
       }
