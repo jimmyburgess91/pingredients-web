@@ -178,7 +178,7 @@ class Recipes extends Component {
             key={recipe.id}
             className="image"
           >
-            <img src={recipe.image.original.url}/>
+            <img src={recipe.image.original.url} style={{height: recipe.image.original.height / (recipe.image.original.width / columnDimensions.columnWidth)}}/>
             <figcaption>{recipe.metadata.recipe.name}</figcaption>
             <button
               className="makingButton"
