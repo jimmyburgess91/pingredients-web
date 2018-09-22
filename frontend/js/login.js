@@ -43,6 +43,10 @@ class Login extends Component {
 
   createOrGetUser(token) {
     PDK.me({}, function(response) {
+      if (response.error) {
+        this.login();
+        return;
+      }
       axios.put('/users/' + response.data.id, {}, {headers: {"oauth_token": token}}).then(function(r) {
         axios.defaults.headers.common["oauth_token"] = token;
         axios.defaults.headers.common["user_id"] = response.data.id;
